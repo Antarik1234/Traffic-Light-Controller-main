@@ -1,0 +1,78 @@
+module Traffic_Controller_TB;
+
+reg clk;
+reg rst;
+reg side_sensor;
+
+wire [2:0] main;
+wire [2:0] side;
+
+// Instantiate DUT
+Traffic_Controller dut (
+    .clk(clk),
+    .rst(rst),
+    .side_sensor(side_sensor),
+    .main(main),
+    .side(side)
+);
+
+/////////////////////////////////////////////////
+// Clock Generation (10ns period)
+/////////////////////////////////////////////////
+
+initial begin
+    clk = 0;
+    forever #5 clk = ~clk;
+end
+
+/////////////////////////////////////////////////
+// Monitor Signals
+/////////////////////////////////////////////////
+
+initial begin
+    $display("TIME\tSensor\tMAIN(RYG)\tSIDE(RYG)");
+    $monitor("%0t\t%b\t%b%b%b\t%b%b%b",
+             $time,
+             side_sensor,
+             main[2], main[1], main[0],
+             side[2], side[1], side[0]);
+end
+
+/////////////////////////////////////////////////
+// Stimulus
+/////////////////////////////////////////////////
+
+initial begin
+
+    // Initial values
+    rst = 1;
+    side_sensor = 0;
+
+    // Apply reset
+    #20;
+    rst = 0;
+
+    // Main road running normally
+    #80;
+
+    // Vehicle arrives at side road
+    side_sensor = 1;
+    #100;
+
+    // Vehicle leaves
+    side_sensor = 0;
+    #120;
+
+    // Another vehicle arrives
+    side_sensor = 1;
+    #150;
+
+    // No vehicle again
+    side_sensor = 0;
+    #150;
+
+    $finish;
+
+end
+
+endmodule
