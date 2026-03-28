@@ -135,7 +135,7 @@ run -all
 
 ## 👨‍💻 Author
 
-**Agnik Maity**
+**Antarik Sinha**
 Institute of Engineering & Management, Kolkata
 
 ---
